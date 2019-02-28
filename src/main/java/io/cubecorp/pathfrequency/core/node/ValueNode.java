@@ -45,6 +45,15 @@ public class ValueNode {
         return valueType;
     }
 
+    public String toString(int pathOccurrence) {
+
+        String value = getValue().toString();
+        int vf = valueFrequency.get();
+        float ratio = ((float)vf/(float)pathOccurrence);
+
+        return String.format("{%s, %s/%s},", value, vf, pathOccurrence);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
