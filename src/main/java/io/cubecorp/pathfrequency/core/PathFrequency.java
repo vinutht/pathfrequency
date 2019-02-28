@@ -66,19 +66,23 @@ public final class PathFrequency {
 
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        Iterator<String> keyIter = nameNodes.keySet().iterator();
-        while(keyIter.hasNext()) {
-            String key = keyIter.next();
-            NameNode nameNode = nameNodes.get(key);
 
-            int pf = nameNode.getPathFrequency();
-            float ratio = ((float)pf/(float)numOfDocuments.get());
+        synchronized (nameNodes) {
+            Iterator<String> keyIter = nameNodes.keySet().iterator();
+            while(keyIter.hasNext()) {
+                String key = keyIter.next();
+                NameNode nameNode = nameNodes.get(key);
 
-            if(ratio >= pathOccurrenceRatio) {
-                sb.append("\n\n");
-                sb.append(nameNode.toString(topK, numOfDocuments.get()));
+                int pf = nameNode.getPathFrequency();
+                float ratio = ((float)pf/(float)numOfDocuments.get());
+
+                if(ratio >= pathOccurrenceRatio) {
+                    sb.append("\n\n");
+                    sb.append(nameNode.toString(topK, numOfDocuments.get()));
+                }
             }
         }
+
         sb.append("\n\n]");
         return sb.toString();
     }
