@@ -1,13 +1,14 @@
 package io.cubecorp.pathfrequency;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Context {
 
     private final ResourceBundle messageBundle;
 
-    public Context(ResourceBundle messageBundle) {
-        this.messageBundle = messageBundle;
+    public Context() {
+        this.messageBundle = ResourceBundle.getBundle("message", new Locale("en","US"));
     }
 
     public String getMessageString(String key, String ... args) {

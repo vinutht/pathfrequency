@@ -1,14 +1,34 @@
 package io.cubecorp.pathfrequency;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.IOException;
+import java.util.Iterator;
+
 
 public class Main {
 
     public static void main(String args[]) {
 
-        ResourceBundle messages = ResourceBundle.getBundle("message", new Locale("en","US"));
+        Context context = new Context();
+        InputJson.Builder inputJsonBuilder = new InputJson.Builder();
 
-        PathFrequency pathFrequency = PathFrequency.getInstance(new Context(messages));
+        try {
+            InputJson inputJson = inputJsonBuilder
+                    .setInputFileName("input.json")
+                    .setContext(context)
+                    .build();
+
+            Iterator<JsonNode> inputJsonIter = inputJson.iterator();
+
+            while(inputJsonIter.hasNext()) {
+                JsonNode eachDocument = inputJsonIter.next();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
