@@ -69,7 +69,7 @@ public class Main {
                 pathFrequency.addDocument(eachDocument);
             }
 
-            System.out.println(pathFrequency.toString(topK));
+            System.out.println(pathFrequency.toString(topK, pathOccurenceRatio));
 
         } catch (IOException e) {
             e.printStackTrace();
