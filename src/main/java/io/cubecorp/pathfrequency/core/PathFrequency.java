@@ -34,9 +34,9 @@ public final class PathFrequency {
         while(fields.hasNext()) {
             Map.Entry<String, JsonNode> eachField = fields.next();
             String key = eachField.getKey();
-            JsonNode valueNode = eachField.getValue();
+            JsonNode valueJsonNode = eachField.getValue();
 
-            Iterator<Map.Entry<String, JsonNode>> childDocuments = valueNode.fields();
+            Iterator<Map.Entry<String, JsonNode>> childDocuments = valueJsonNode.fields();
             String path = String.format("%s/%s", parent, key);
 
             if(childDocuments.hasNext()) {
@@ -49,6 +49,9 @@ public final class PathFrequency {
                 //Leaf
                 NameNode nameNode = new NameNode(context, path, NameNode.NAME_NODE_TYPE.LEAF);
                 addNameNode(nameNode);
+
+                ValueNode valueNode = new ValueNode(context, valueJsonNode.toString(), ValueNode.VALUE_TYPE.STRING);
+                addValueNode(path, valueNode);
             }
         }
     }
@@ -56,6 +59,22 @@ public final class PathFrequency {
     public void addDocument(JsonNode jsonDocument) {
         Iterator<Map.Entry<String, JsonNode>> fields = jsonDocument.fields();
         iterateOverFields("", fields);
+        numOfDocuments.incrementAndGet();
+    }
+
+    public String toString(int topK) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        Iterator<String> keyIter = nameNodes.keySet().iterator();
+        while(keyIter.hasNext()) {
+            String key = keyIter.next();
+            NameNode nameNode = nameNodes.get(key);
+            sb.append("\n\n");
+            sb.append(nameNode.toString(topK, numOfDocuments.get()));
+        }
+        sb.append("\n\n]");
+        return sb.toString();
     }
 
     private void addNameNode(NameNode nameNode) {
@@ -90,4 +109,6 @@ public final class PathFrequency {
             existingNameNode.addValueNode(valueNode);
         }
     }
+
+
 }

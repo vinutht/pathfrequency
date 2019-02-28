@@ -31,6 +31,8 @@ public class Main {
                 pathFrequency.addDocument(eachDocument);
             }
 
+            System.out.println(pathFrequency.toString(1));
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {

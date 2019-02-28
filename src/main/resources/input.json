@@ -25,5 +25,8 @@
             "city": "dublin",
             "state": "ca"
         }
+    },
+    {
+        "name": "Joe"
     }
 ]

@@ -1,5 +1,6 @@
 package io.cubecorp.pathfrequency.core.node;
 
+import com.sun.javafx.binding.StringFormatter;
 import io.cubecorp.pathfrequency.core.Context;
 
 import java.util.*;
@@ -70,6 +71,27 @@ public class NameNode {
             }
 
         }
+    }
+
+    public String toString(int topK, int numOfDocuments) {
+        int pf = pathFrequency.get();
+        float ratio = ((float)pf/(float)numOfDocuments);
+        return String.format("%s, %s, %s", path, ratio, valueNodesToString(topK, pf));
+    }
+
+    private String valueNodesToString(int topK, int pathOccurrence) {
+        Iterator<String> keys = values.keySet().iterator();
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        while(keys.hasNext()) {
+            ValueNode valueNode = values.get(keys.next());
+            String value = valueNode.getValue().toString();
+            int vf = valueNode.getValueFrequency();
+            float ratio = ((float)vf/(float)pathOccurrence);
+            sb.append(String.format("{%s, %s/%s},", value, vf, pathOccurrence));
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
 }
