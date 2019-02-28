@@ -1,4 +1,4 @@
-package io.cubecorp.pathfrequency;
+package io.cubecorp.pathfrequency.core;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

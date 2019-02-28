@@ -1,6 +1,6 @@
-package io.cubecorp.pathfrequency.node;
+package io.cubecorp.pathfrequency.core.node;
 
-import io.cubecorp.pathfrequency.Context;
+import io.cubecorp.pathfrequency.core.Context;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;

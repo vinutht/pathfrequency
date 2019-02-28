@@ -1,8 +1,8 @@
-package io.cubecorp.pathfrequency;
+package io.cubecorp.pathfrequency.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.cubecorp.pathfrequency.node.NameNode;
-import io.cubecorp.pathfrequency.node.ValueNode;
+import io.cubecorp.pathfrequency.core.node.NameNode;
+import io.cubecorp.pathfrequency.core.node.ValueNode;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-final class PathFrequency {
+public final class PathFrequency {
 
     private static PathFrequency instance;
     private final AtomicInteger numOfDocuments = new AtomicInteger();

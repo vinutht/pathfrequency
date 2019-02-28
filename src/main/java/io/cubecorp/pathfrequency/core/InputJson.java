@@ -1,4 +1,4 @@
-package io.cubecorp.pathfrequency;
+package io.cubecorp.pathfrequency.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

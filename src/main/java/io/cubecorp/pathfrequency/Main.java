@@ -1,6 +1,9 @@
 package io.cubecorp.pathfrequency;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.cubecorp.pathfrequency.core.Context;
+import io.cubecorp.pathfrequency.core.InputJson;
+import io.cubecorp.pathfrequency.core.PathFrequency;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -27,7 +30,7 @@ public class Main {
                 JsonNode eachDocument = inputJsonIter.next();
                 pathFrequency.addDocument(eachDocument);
             }
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
