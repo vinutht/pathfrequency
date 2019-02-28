@@ -23,7 +23,9 @@ public class InputJson {
 
     public Iterator<JsonNode> iterator() throws Exception {
         if(rootNode.isArray()) {
-            return rootNode.iterator();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode returnNode = objectMapper.readTree(rootNode.toString());
+            return returnNode.iterator();
         }
         throw new Exception(context.getMessageString("input.json.array.expected"));
     }

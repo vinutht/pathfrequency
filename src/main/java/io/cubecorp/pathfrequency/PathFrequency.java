@@ -1,9 +1,11 @@
 package io.cubecorp.pathfrequency;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.cubecorp.pathfrequency.node.NameNode;
 import io.cubecorp.pathfrequency.node.ValueNode;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +30,35 @@ final class PathFrequency {
         return instance;
     }
 
-    public void addNameNode(NameNode nameNode) {
+    private void iterateOverFields(String parent, Iterator<Map.Entry<String, JsonNode>> fields) {
+        while(fields.hasNext()) {
+            Map.Entry<String, JsonNode> eachField = fields.next();
+            String key = eachField.getKey();
+            JsonNode valueNode = eachField.getValue();
+
+            Iterator<Map.Entry<String, JsonNode>> childDocuments = valueNode.fields();
+            String path = String.format("%s/%s", parent, key);
+
+            if(childDocuments.hasNext()) {
+                //Intermediate Nodes
+                NameNode nameNode = new NameNode(context, path, NameNode.NAME_NODE_TYPE.DOC);
+                addNameNode(nameNode);
+                iterateOverFields(path, childDocuments);
+            }
+            else {
+                //Leaf
+                NameNode nameNode = new NameNode(context, path, NameNode.NAME_NODE_TYPE.LEAF);
+                addNameNode(nameNode);
+            }
+        }
+    }
+
+    public void addDocument(JsonNode jsonDocument) {
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonDocument.fields();
+        iterateOverFields("", fields);
+    }
+
+    private void addNameNode(NameNode nameNode) {
 
         Objects.requireNonNull(nameNode, context.getMessageString("namenode.mandatory"));
 
@@ -49,7 +79,7 @@ final class PathFrequency {
         }
     }
 
-    public void addValueNode(String path, ValueNode valueNode) {
+    private void addValueNode(String path, ValueNode valueNode) {
 
         Objects.requireNonNull(path, context.getMessageString("namenode.path.mandatory"));
         Objects.requireNonNull(valueNode, context.getMessageString("valuenode.mandatory"));

@@ -19,12 +19,15 @@ public class Main {
                     .setContext(context)
                     .build();
 
+            PathFrequency pathFrequency = PathFrequency.getInstance(context);
+
             Iterator<JsonNode> inputJsonIter = inputJson.iterator();
 
             while(inputJsonIter.hasNext()) {
                 JsonNode eachDocument = inputJsonIter.next();
+                pathFrequency.addDocument(eachDocument);
             }
-
+            
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
