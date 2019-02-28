@@ -1,6 +1,5 @@
 package io.cubecorp.pathfrequency.core.node;
 
-import com.sun.javafx.binding.StringFormatter;
 import io.cubecorp.pathfrequency.core.Context;
 
 import java.util.*;
@@ -18,7 +17,7 @@ public class NameNode {
 
     private AtomicInteger pathFrequency = new AtomicInteger();
 
-    private LinkedHashMap<String, ValueNode> values = new LinkedHashMap<>();
+    private Map<String, ValueNode> values = new HashMap<>();
 
     public NameNode(Context context, String path, NAME_NODE_TYPE nodeType) {
 
@@ -85,7 +84,9 @@ public class NameNode {
         sb.append("[");
         while(keys.hasNext()) {
             ValueNode valueNode = values.get(keys.next());
-            sb.append(valueNode.toString(pathFrequency.get()));
+            if(valueNode.getValueFrequency() >= topK) {
+                sb.append(valueNode.toString(pathFrequency.get()));
+            }
         }
         sb.append("]");
         return sb.toString();
