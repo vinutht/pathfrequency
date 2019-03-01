@@ -47,6 +47,9 @@ public final class PathFrequency {
         return instance;
     }
 
+    public int getNumOfDocuments() {
+        return numOfDocuments.get();
+    }
 
     /**
      * This is the main entry point for computing the path frequency of the given document.
@@ -149,6 +152,10 @@ public final class PathFrequency {
      * */
     public void print(Writer writer) {
 
+    }
+
+    public static void forceNullify() {
+        instance = null;
     }
 
 
