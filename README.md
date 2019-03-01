@@ -23,7 +23,10 @@ And, so on.
 
 
 # To run the program <br>
-# ------------------- <br>
+<br>
 
 main-class: Main <br>
 program-arguments: -k {topK} -r {occurrence-ratio} -i {input json filename} <br>
+
+# Example
+io.cubecorp.pathfrequency.Main -k 2 -r 0.1 -i input.json
