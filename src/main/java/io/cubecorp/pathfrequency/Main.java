@@ -81,7 +81,20 @@ public class Main {
             }
 
             //Once after all the documents are added and path frequency is computed, print the results
-            //System.out.println(pathFrequency.toString());
+            //These are the three options to print
+
+            //Option1: System.out.println(pathFrequency.toString());
+            //Option1 will construct the whole string in memory and use it to print. This should be totally avoided.
+
+
+            //Option2: pathFrequency.print();
+            //Option2 will print as it traverses the nodes and it doesnt construct large string objects in memory and hence it becomes more viable.
+
+
+            //Option3: pathFrequency.print(Writer);
+            //Option3 uses a writer object to write to it. It can be a filewriter so that the output is written to the file.
+
+            //But I am using Option 2 here
             pathFrequency.print();
 
         } catch (IOException e) {

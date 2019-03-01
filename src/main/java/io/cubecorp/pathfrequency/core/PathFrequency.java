@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.cubecorp.pathfrequency.core.node.NameNode;
 import io.cubecorp.pathfrequency.core.node.ValueNode;
 
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -82,6 +83,8 @@ public final class PathFrequency {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
 
+        //Even though we could have avoided using synchronizer here but keeping it for safety.
+        //toString will generally be called when all the threads are done with adding their documents for path frequency computation, so we neednot use synchronized here.
         synchronized (nameNodes) {
             Iterator<String> keyIter = nameNodes.keySet().iterator();
             while(keyIter.hasNext()) {
@@ -102,6 +105,11 @@ public final class PathFrequency {
         return sb.toString();
     }
 
+    /***
+     * This method will print the results as it traverses the jsonobjecttree
+     *
+     * Make use of this to print to the console.
+     * **/
     public void print() {
 
         int topK = context.getTopK();
@@ -111,6 +119,8 @@ public final class PathFrequency {
 
         System.out.println("[");
 
+        //Even though we could have avoided using synchronizer here but keeping it for safety.
+        //print will generally be called when all the threads are done with adding their documents for path frequency computation, so we neednot use synchronized here.
         synchronized (nameNodes) {
             Iterator<String> keyIter = nameNodes.keySet().iterator();
             while(keyIter.hasNext()) {
@@ -128,6 +138,17 @@ public final class PathFrequency {
         }
 
         System.out.println("\n\n]");
+    }
+
+
+    /***
+     * The idea here is to write the output to the file.
+     * Right now it is an empty function
+     *
+     * @param writer This is the writer object that will be used to write the output to. It can be bufferedfilewriter.
+     * */
+    public void print(Writer writer) {
+
     }
 
 

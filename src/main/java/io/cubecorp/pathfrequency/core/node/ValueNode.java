@@ -5,11 +5,16 @@ import io.cubecorp.pathfrequency.core.Context;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+
+/**
+ * ValueNode stores the values of json-attribute and its statistics.
+ * **/
 public class ValueNode {
 
     private final Object value;
     private final Context context;
 
+    //Number of times this value is present in the entire document set.
     private AtomicInteger valueFrequency = new AtomicInteger();
 
     public ValueNode(Context context, Object value) {
@@ -58,10 +63,10 @@ public class ValueNode {
         float ratio = ((float)vf/(float)pathOccurrence);
 
         if(ratio == 1.0f) {
-            System.out.print(String.format("{%s, %s},", value, 1));
+            System.out.print(String.format("{%s, %s}, ", value, 1));
         }
         else {
-            System.out.print(String.format("{%s, %s/%s},", value, vf, pathOccurrence));
+            System.out.print(String.format("{%s, %s/%s}, ", value, vf, pathOccurrence));
         }
     }
 

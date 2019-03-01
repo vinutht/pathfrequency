@@ -5,6 +5,10 @@ import io.cubecorp.pathfrequency.core.Context;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * This is the class which stores the json attribute-key and its statistics.
+ * This is thread-safe with the intention to be accessed by multiple threads
+ * **/
 public class NameNode {
 
     public enum NAME_NODE_TYPE {
@@ -15,8 +19,12 @@ public class NameNode {
     private final NAME_NODE_TYPE nodeType;
     private final Context context;
 
+    //Stores the frequency of the attribute-key
     private AtomicInteger pathFrequency = new AtomicInteger();
 
+    //Stores all the values as ValueNode of this particular attribute-key
+    //@GuardedBy(values)
+    //This is thread-safe
     private Map<String, ValueNode> values = new HashMap<>();
 
     public NameNode(Context context, String path, NAME_NODE_TYPE nodeType) {
@@ -46,6 +54,10 @@ public class NameNode {
         pathFrequency.incrementAndGet();
     }
 
+    /**
+     * This method adds valueNode at a particular path in the NameNode hierarchy.
+     * It first finds the NameNode associated with the path and then attaches the ValueNode to that NameNode.
+     * */
     public void addValueNode(ValueNode valueNode) {
 
         if(nodeType == NAME_NODE_TYPE.LEAF) {
@@ -89,6 +101,9 @@ public class NameNode {
         }
     }
 
+    /**
+     * This method prints the details of the name node to the console.
+     * **/
     public void print() {
         int numOfDocuments = context.getTotalNumberOfDocuments();
         int pf = pathFrequency.get();
@@ -133,4 +148,18 @@ public class NameNode {
         return sb.toString();
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NameNode nameNode = (NameNode) o;
+        return Objects.equals(path, nameNode.path) &&
+                nodeType == nameNode.nodeType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path, nodeType);
+    }
 }
