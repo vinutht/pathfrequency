@@ -53,17 +53,15 @@ public class NameNode {
             Objects.requireNonNull(valueNode, context.getMessageString("valuenode.mandatory"));
 
             Object value = valueNode.getValue();
-            ValueNode.VALUE_TYPE valueType = valueNode.getValueType();
 
             Objects.requireNonNull(value, context.getMessageString("valuenode.value.mandatory"));
-            Objects.requireNonNull(valueType, context.getMessageString("valuenode.type.mandatory"));
 
             String valString = value.toString();
 
             synchronized (values) {
                 ValueNode existingValueNode = values.get(valString);
                 if(existingValueNode == null) {
-                    existingValueNode = new ValueNode(context, value, valueType);
+                    existingValueNode = new ValueNode(context, value);
                 }
                 existingValueNode.incrementValueFrequency();
                 values.put(valString, existingValueNode);

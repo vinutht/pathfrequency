@@ -15,7 +15,7 @@ public class Main {
     public static void main(String args[]) throws Exception {
 
         Context context = new Context();
-        
+
         if(!Options.instance(context).parseArgs(args)) {
             return;
         }

@@ -50,7 +50,7 @@ public final class PathFrequency {
                 NameNode nameNode = new NameNode(context, path, NameNode.NAME_NODE_TYPE.LEAF);
                 addNameNode(nameNode);
 
-                ValueNode valueNode = new ValueNode(context, valueJsonNode.toString(), ValueNode.VALUE_TYPE.STRING);
+                ValueNode valueNode = new ValueNode(context, valueJsonNode.toString());
                 addValueNode(path, valueNode);
             }
         }

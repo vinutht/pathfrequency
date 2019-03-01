@@ -12,21 +12,13 @@ public class ValueNode {
 
     private AtomicInteger valueFrequency = new AtomicInteger();
 
-    public enum VALUE_TYPE {
-        INT, STRING
-    }
-
-    private final VALUE_TYPE valueType;
-
-    public ValueNode(Context context, Object value, VALUE_TYPE type) {
+    public ValueNode(Context context, Object value) {
 
         Objects.requireNonNull(context, "Context is mandatory");
         Objects.requireNonNull(value, context.getMessageString("valuenode.value.mandatory"));
-        Objects.requireNonNull(type, context.getMessageString("valuenode.type.mandatory"));
 
         this.context = context;
         this.value = value;
-        this.valueType = type;
     }
 
     public Object getValue() {
@@ -41,9 +33,6 @@ public class ValueNode {
         this.valueFrequency.incrementAndGet();
     }
 
-    public VALUE_TYPE getValueType() {
-        return valueType;
-    }
 
     public String toString(int pathOccurrence) {
 
@@ -59,12 +48,11 @@ public class ValueNode {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ValueNode valueNode = (ValueNode) o;
-        return Objects.equals(value, valueNode.value) &&
-                valueType == valueNode.valueType;
+        return Objects.equals(value, valueNode.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, valueType);
+        return Objects.hash(value);
     }
 }
