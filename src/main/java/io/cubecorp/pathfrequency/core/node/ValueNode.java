@@ -40,7 +40,14 @@ public class ValueNode {
         int vf = valueFrequency.get();
         float ratio = ((float)vf/(float)pathOccurrence);
 
-        return String.format("{%s, %s/%s},", value, vf, pathOccurrence);
+        if(ratio == 1.0f) {
+            return String.format("{%s, %s},", value, 1);
+        }
+        else {
+            return String.format("{%s, %s/%s},", value, vf, pathOccurrence);
+        }
+
+
     }
 
     @Override

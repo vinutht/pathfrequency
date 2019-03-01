@@ -74,7 +74,12 @@ public class NameNode {
         int numOfDocuments = context.getTotalNumberOfDocuments();
         int pf = pathFrequency.get();
         float ratio = ((float)pf/(float)numOfDocuments);
-        return String.format("%s, %s/%s, %s", path, pf, numOfDocuments, valueNodesToString());
+        if(ratio == 1.0f) {
+            return String.format("%s, %s, %s", path, 1, valueNodesToString());
+        }
+        else {
+            return String.format("%s, %s/%s, %s", path, pf, numOfDocuments, valueNodesToString());
+        }
     }
 
     private String valueNodesToString() {

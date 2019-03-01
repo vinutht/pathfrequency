@@ -47,11 +47,36 @@ public final class PathFrequency {
             }
             else {
                 //Leaf
-                NameNode nameNode = new NameNode(context, path, NameNode.NAME_NODE_TYPE.LEAF);
-                addNameNode(nameNode);
+                if(valueJsonNode.isArray()) {
+                    NameNode nameNode = new NameNode(context, path, NameNode.NAME_NODE_TYPE.ARRAY);
+                    addNameNode(nameNode);
 
-                ValueNode valueNode = new ValueNode(context, valueJsonNode.toString());
-                addValueNode(path, valueNode);
+                    Iterator<JsonNode> arrValuesIter = valueJsonNode.elements();
+                    int arrIndex = 0;
+                    while(arrValuesIter.hasNext()) {
+                        JsonNode arrElement = arrValuesIter.next();
+                        if(!arrElement.isObject()) {
+
+                            String newPath = String.format("%s/%s", path, arrIndex);
+                            NameNode arrElemNameNode = new NameNode(context, newPath, NameNode.NAME_NODE_TYPE.LEAF);
+                            addNameNode(arrElemNameNode);
+
+                            ValueNode valueNode = new ValueNode(context, arrElement.toString());
+                            addValueNode(newPath, valueNode);
+
+                            arrIndex++;
+                        }
+                    }
+                }
+                else {
+                    NameNode nameNode = new NameNode(context, path, NameNode.NAME_NODE_TYPE.LEAF);
+                    addNameNode(nameNode);
+
+                    ValueNode valueNode = new ValueNode(context, valueJsonNode.toString());
+                    addValueNode(path, valueNode);
+                }
+
+
             }
         }
     }

@@ -27,6 +27,16 @@
         }
     },
     {
-        "name": "Joe"
+        "name": "Joe",
+        "qualifications": ["BS", "MS"]
+    },
+    {
+        "name": "Evan",
+        "qualifications": ["BS", "MS"]
+    }
+,
+    {
+        "name": "Rony",
+        "qualifications": ["BE", "MS"]
     }
 ]
