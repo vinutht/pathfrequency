@@ -9,6 +9,7 @@ public class Context {
 
     private int topK;
     private float occurrenceRatio;
+    private String inputFileName;
     private int totalNumberOfDocuments;
 
     public Context() {
@@ -44,5 +45,13 @@ public class Context {
 
     public void setTotalNumberOfDocuments(int totalNumberOfDocuments) {
         this.totalNumberOfDocuments = totalNumberOfDocuments;
+    }
+
+    public String getInputFileName() {
+        return inputFileName;
+    }
+
+    public void setInputFileName(String inputFileName) {
+        this.inputFileName = inputFileName;
     }
 }

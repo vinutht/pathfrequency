@@ -10,11 +10,27 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * This is the main class which computes the Path Frequency.
+ *
+ * This class is thread-safe and it can be used by multiple threads to parallelly compute the path frequency of the independent document.
+ *
+ * This is also a singleton class
+ *
+ * **/
 public final class PathFrequency {
 
     private static PathFrequency instance;
+
+    //Total number of documents used to compute the path frequency
+    //It is atomic
     private final AtomicInteger numOfDocuments = new AtomicInteger();
+
+    //This is the field which stores all the Attributes of the JSON document
+    //@GuardedBy(nameNodes) and is thread safe
     private final Map<String, NameNode> nameNodes = new HashMap<>();
+
+    //Application wide context.
     private final Context context;
 
 
@@ -29,6 +45,91 @@ public final class PathFrequency {
         }
         return instance;
     }
+
+
+    /**
+     * This is the main entry point for computing the path frequency of the given document.
+     * This api can be called with in a task and run by threads to improve the performance of the computation.
+     * It traverses the jsonDocument provided and creates NameNodes and ValueNodes from each attribute in the json document.
+     *
+     * NameNode is the json key attribute and ValueNode is the value attribute
+     * Both of these objects store and compute the statistics needed for pathfrequency computation.
+     *
+     * @param jsonDocument The json document object representing individual json record.
+     *
+     * */
+    public void addDocument(JsonNode jsonDocument) {
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonDocument.fields();
+        iterateOverFields("", fields);
+        numOfDocuments.incrementAndGet();
+    }
+
+
+    /**
+     * This is a very costly api to call
+     * as it constructs the string representation of the entire path frequency objects in memory.
+     * Use it at your own risk.
+     *
+     * If the requirement is just to print, use the print method instead.
+     * */
+    public String toString() {
+
+        int topK = context.getTopK();
+        float pathOccurrenceRatio = context.getOccurrenceRatio();
+
+        context.setTotalNumberOfDocuments(numOfDocuments.get());
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+
+        synchronized (nameNodes) {
+            Iterator<String> keyIter = nameNodes.keySet().iterator();
+            while(keyIter.hasNext()) {
+                String key = keyIter.next();
+                NameNode nameNode = nameNodes.get(key);
+
+                int pf = nameNode.getPathFrequency();
+                float ratio = ((float)pf/(float)numOfDocuments.get());
+
+                if(ratio >= pathOccurrenceRatio) {
+                    sb.append("\n\n");
+                    sb.append(nameNode.toString());
+                }
+            }
+        }
+
+        sb.append("\n\n]");
+        return sb.toString();
+    }
+
+    public void print() {
+
+        int topK = context.getTopK();
+        float pathOccurrenceRatio = context.getOccurrenceRatio();
+
+        context.setTotalNumberOfDocuments(numOfDocuments.get());
+
+        System.out.println("[");
+
+        synchronized (nameNodes) {
+            Iterator<String> keyIter = nameNodes.keySet().iterator();
+            while(keyIter.hasNext()) {
+                String key = keyIter.next();
+                NameNode nameNode = nameNodes.get(key);
+
+                int pf = nameNode.getPathFrequency();
+                float ratio = ((float)pf/(float)numOfDocuments.get());
+
+                if(ratio >= pathOccurrenceRatio) {
+                    System.out.println("\n\n");
+                    nameNode.print();
+                }
+            }
+        }
+
+        System.out.println("\n\n]");
+    }
+
 
     private void iterateOverFields(String parent, Iterator<Map.Entry<String, JsonNode>> fields) {
         while(fields.hasNext()) {
@@ -81,41 +182,6 @@ public final class PathFrequency {
         }
     }
 
-    public void addDocument(JsonNode jsonDocument) {
-        Iterator<Map.Entry<String, JsonNode>> fields = jsonDocument.fields();
-        iterateOverFields("", fields);
-        numOfDocuments.incrementAndGet();
-    }
-
-    public String toString() {
-
-        int topK = context.getTopK();
-        float pathOccurrenceRatio = context.getOccurrenceRatio();
-
-        context.setTotalNumberOfDocuments(numOfDocuments.get());
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-
-        synchronized (nameNodes) {
-            Iterator<String> keyIter = nameNodes.keySet().iterator();
-            while(keyIter.hasNext()) {
-                String key = keyIter.next();
-                NameNode nameNode = nameNodes.get(key);
-
-                int pf = nameNode.getPathFrequency();
-                float ratio = ((float)pf/(float)numOfDocuments.get());
-
-                if(ratio >= pathOccurrenceRatio) {
-                    sb.append("\n\n");
-                    sb.append(nameNode.toString());
-                }
-            }
-        }
-
-        sb.append("\n\n]");
-        return sb.toString();
-    }
 
     private void addNameNode(NameNode nameNode) {
 

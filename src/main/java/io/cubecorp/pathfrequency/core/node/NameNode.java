@@ -70,6 +70,13 @@ public class NameNode {
         }
     }
 
+    /**
+     * This is a very costly api to call
+     * as it constructs the string representation of the entire path frequency objects in memory.
+     * Use it at your own risk.
+     *
+     * If the requirement is just to print, use the print method instead.
+     * */
     public String toString() {
         int numOfDocuments = context.getTotalNumberOfDocuments();
         int pf = pathFrequency.get();
@@ -80,6 +87,35 @@ public class NameNode {
         else {
             return String.format("%s, %s/%s, %s", path, pf, numOfDocuments, valueNodesToString());
         }
+    }
+
+    public void print() {
+        int numOfDocuments = context.getTotalNumberOfDocuments();
+        int pf = pathFrequency.get();
+        float ratio = ((float)pf/(float)numOfDocuments);
+        if(ratio == 1.0f) {
+            System.out.print(String.format("%s, %s, ", path, 1));
+            printValueNodes();
+            System.out.println();
+        }
+        else {
+            System.out.print(String.format("%s, %s/%s, ", path, pf, numOfDocuments));
+            printValueNodes();
+            System.out.println();
+        }
+    }
+
+    private void printValueNodes() {
+        int topK = context.getTopK();
+        Iterator<String> keys = values.keySet().iterator();
+        System.out.print("[");
+        while(keys.hasNext()) {
+            ValueNode valueNode = values.get(keys.next());
+            if(valueNode.getValueFrequency() >= topK) {
+                valueNode.print(pathFrequency.get());
+            }
+        }
+        System.out.print("]");
     }
 
     private String valueNodesToString() {

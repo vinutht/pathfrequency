@@ -2,6 +2,13 @@ package io.cubecorp.pathfrequency.utils;
 
 import io.cubecorp.pathfrequency.core.Context;
 
+/**
+ * This is the class to read the program arguments
+ * The expected arguments to the program are
+ * -k = Top K values to be shown
+ * -r = Top json nodes to be shown whose count ratio is greater than the provided ratio
+ * -i = input json filename needed as input for the program to compute the path frequency
+ * **/
 public class Options {
 
 
@@ -25,6 +32,8 @@ public class Options {
         if (argv != null) {
             int topK = 1;
             float occurrenceRatio = 0.3f;
+            String inputFileName = "input.json";
+            context.setInputFileName(inputFileName);
 
             for (int argc = 0; argc < argv.length; argc += 2) {
                 if (argv[argc].equals("-k")) {
@@ -38,6 +47,10 @@ public class Options {
                 }
                 else if (argv[argc].equals("-r")) {
                     occurrenceRatio = Float.parseFloat(argv[argc + 1]);
+                }
+                else if(argv[argc].equals("-i")) {
+                    inputFileName = argv[argc + 1];
+                    context.setInputFileName(inputFileName);
                 }
                 else {
                     printUsage();
@@ -53,6 +66,10 @@ public class Options {
                 throw new Exception(context.getMessageString("path.occurrence.ratio.error"));
             }
 
+            if(inputFileName == null || inputFileName.trim().length() == 0) {
+                throw new Exception(context.getMessageString("input.file.mandatory"));
+            }
+
             context.setTopK(topK);
             context.setOccurrenceRatio(occurrenceRatio);
 
@@ -65,5 +82,6 @@ public class Options {
         System.out.println("Usage: ");
         System.out.println("-k topK");
         System.out.println("-r occurenceRatio");
+        System.out.println("-i input json filename");
     }
 }
