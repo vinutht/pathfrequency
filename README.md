@@ -27,6 +27,9 @@ And, so on.
 
 main-class: Main <br>
 program-arguments: -k {topK} -r {occurrence-ratio} -i {input json filename} <br>
+input-file: There is already an input.json file present along with the source-code in the resource directory. We can make use of it.<br>
+If we need to add a new input file then we have to put it under resource folder.
 
 # Example
 io.cubecorp.pathfrequency.Main -k 2 -r 0.1 -i input.json
+
