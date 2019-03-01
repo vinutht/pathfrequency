@@ -72,13 +72,15 @@ public class NameNode {
         }
     }
 
-    public String toString(int topK, int numOfDocuments) {
+    public String toString() {
+        int numOfDocuments = context.getTotalNumberOfDocuments();
         int pf = pathFrequency.get();
         float ratio = ((float)pf/(float)numOfDocuments);
-        return String.format("%s, %s/%s, %s", path, pf, numOfDocuments, valueNodesToString(topK));
+        return String.format("%s, %s/%s, %s", path, pf, numOfDocuments, valueNodesToString());
     }
 
-    private String valueNodesToString(int topK) {
+    private String valueNodesToString() {
+        int topK = context.getTopK();
         Iterator<String> keys = values.keySet().iterator();
         StringBuilder sb = new StringBuilder();
         sb.append("[");

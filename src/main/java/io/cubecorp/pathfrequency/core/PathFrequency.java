@@ -62,7 +62,12 @@ public final class PathFrequency {
         numOfDocuments.incrementAndGet();
     }
 
-    public String toString(int topK, float pathOccurrenceRatio) {
+    public String toString() {
+
+        int topK = context.getTopK();
+        float pathOccurrenceRatio = context.getOccurrenceRatio();
+
+        context.setTotalNumberOfDocuments(numOfDocuments.get());
 
         StringBuilder sb = new StringBuilder();
         sb.append("[");
@@ -78,7 +83,7 @@ public final class PathFrequency {
 
                 if(ratio >= pathOccurrenceRatio) {
                     sb.append("\n\n");
-                    sb.append(nameNode.toString(topK, numOfDocuments.get()));
+                    sb.append(nameNode.toString());
                 }
             }
         }

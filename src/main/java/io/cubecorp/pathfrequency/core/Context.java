@@ -7,6 +7,10 @@ public class Context {
 
     private final ResourceBundle messageBundle;
 
+    private int topK;
+    private float occurrenceRatio;
+    private int totalNumberOfDocuments;
+
     public Context() {
         this.messageBundle = ResourceBundle.getBundle("message", new Locale("en","US"));
     }
@@ -16,5 +20,29 @@ public class Context {
             return String.format(messageBundle.getString(key), args);
         }
         return messageBundle.getString(key);
+    }
+
+    public int getTopK() {
+        return topK;
+    }
+
+    public void setTopK(int topK) {
+        this.topK = topK;
+    }
+
+    public float getOccurrenceRatio() {
+        return occurrenceRatio;
+    }
+
+    public void setOccurrenceRatio(float occurrenceRatio) {
+        this.occurrenceRatio = occurrenceRatio;
+    }
+
+    public int getTotalNumberOfDocuments() {
+        return totalNumberOfDocuments;
+    }
+
+    public void setTotalNumberOfDocuments(int totalNumberOfDocuments) {
+        this.totalNumberOfDocuments = totalNumberOfDocuments;
     }
 }
