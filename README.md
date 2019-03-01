@@ -22,8 +22,8 @@ The paths, percentages, and top values are:
 And, so on.
 
 
-#Running the program
-#-------------------
+# To run the program <br>
+# ------------------- <br>
 
-main-class: Main
-program-arguments: -k <topK> -r <occurrence-ratio> -i <input json filename>
+main-class: Main <br>
+program-arguments: -k {topK} -r {occurrence-ratio} -i {input json filename} <br>
