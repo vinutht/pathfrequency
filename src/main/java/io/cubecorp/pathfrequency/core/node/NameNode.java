@@ -1,5 +1,8 @@
 package io.cubecorp.pathfrequency.core.node;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import io.cubecorp.pathfrequency.core.Context;
 
 import java.util.*;
@@ -26,6 +29,12 @@ public class NameNode {
     //@GuardedBy(values)
     //This is thread-safe
     private Map<String, ValueNode> values = new HashMap<>();
+
+    //Backing data-structure to store valueNodes in sorted order. The sort technique is Radix sort.
+    //Key is the occurrence count and the value is the list of valuenodes with the same occurrence count.
+    //I am using linked hashmap to get the keys in the order of insertion which will be used for topK.
+    //@GuardedBy(values)
+    private Multimap<String, ValueNode> occurrenceCountMap = LinkedHashMultimap.create();
 
     public NameNode(Context context, String path, NAME_NODE_TYPE nodeType) {
 
@@ -57,6 +66,8 @@ public class NameNode {
     /**
      * This method adds valueNode at a particular path in the NameNode hierarchy.
      * It first finds the NameNode associated with the path and then attaches the ValueNode to that NameNode.
+     *
+     * It sorts the valueNode using Radix sort based on the occurrence count of the value node
      * */
     public void addValueNode(ValueNode valueNode) {
 
@@ -77,27 +88,10 @@ public class NameNode {
                 }
                 existingValueNode.incrementValueFrequency();
                 values.put(valString, existingValueNode);
+                //Radix sorting technique. Please see printValueNodes or valueNodesToString method so that it make sense on how sorting is implemented in totality.
+                occurrenceCountMap.put(existingValueNode.getValueFrequency()+"", existingValueNode);
             }
 
-        }
-    }
-
-    /**
-     * This is a very costly api to call
-     * as it constructs the string representation of the entire path frequency objects in memory.
-     * Use it at your own risk.
-     *
-     * If the requirement is just to print, use the print method instead.
-     * */
-    public String toString() {
-        int numOfDocuments = context.getTotalNumberOfDocuments();
-        int pf = pathFrequency.get();
-        float ratio = ((float)pf/(float)numOfDocuments);
-        if(ratio == 1.0f) {
-            return String.format("%s, %s, %s", path, 1, valueNodesToString());
-        }
-        else {
-            return String.format("%s, %s/%s, %s", path, pf, numOfDocuments, valueNodesToString());
         }
     }
 
@@ -122,30 +116,52 @@ public class NameNode {
 
     private void printValueNodes() {
         int topK = context.getTopK();
-        Iterator<String> keys = values.keySet().iterator();
-        System.out.print("[");
-        while(keys.hasNext()) {
-            ValueNode valueNode = values.get(keys.next());
-            if(valueNode.getValueFrequency() >= topK) {
-                valueNode.print(pathFrequency.get());
+
+        List<String> rankList = new ArrayList<>();
+        occurrenceCountMap.keySet().iterator().forEachRemaining(rankList::add);
+
+        Set<ValueNode> topKValueNodes = new HashSet<>();
+
+        /***
+         * I am getting the topK valueNodes from the occurrenceCountMap.
+         * Since occurrenceCountMap keys valueNode based on the occurrenceCount, I am getting all the keys (occurrenceCount)
+         * and iterating it in the reverse order because higher the occurrencecount, it will be stored at the higher index.
+         * Iterating for not more than topK
+         *
+         * Example
+         * occurrencecountMap[1] = {evans, joe}
+         * occurrenceCountMap[2] = {vinuth, rajesh}
+         * occurrenceCountMap[5] = {susan, Ajay}
+         *
+         * Get the topK keys. If suppose the topK is 2 then we will get {5, 2}
+         * Now add all the valueNodes pertaining to 5, 2 into set, so it becomes {susan, Ajay, vinuth, rajesh}
+         *
+         * Now further filter the above list based on the atleastKTimes attribute.
+         * If the atleastKTimes attribute is 3 then only those value nodes with atleast 3 occurrences will be added.
+         * In this case Vinuth, rajesh valueNodes will be omitted.
+         * **/
+        int reverseIndex = rankList.size()-1;
+        int atleastKTimes = context.getAtleastKTimes();
+
+        for(int rankIndex=1; rankIndex<=topK; rankIndex++) {
+            if(reverseIndex >= 0) {
+                String ocStr = rankList.get(reverseIndex);
+                Integer occurrenceCount = Integer.parseInt(ocStr);
+                if(occurrenceCount >= atleastKTimes) {
+                    topKValueNodes.addAll(occurrenceCountMap.get(ocStr));
+                }
+                reverseIndex--;
             }
+        }
+
+
+        Iterator<ValueNode> valueNodes = topKValueNodes.iterator();
+        System.out.print("[");
+        while(valueNodes.hasNext()) {
+            ValueNode valueNode = valueNodes.next();
+            valueNode.print(pathFrequency.get());
         }
         System.out.print("]");
-    }
-
-    private String valueNodesToString() {
-        int topK = context.getTopK();
-        Iterator<String> keys = values.keySet().iterator();
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        while(keys.hasNext()) {
-            ValueNode valueNode = values.get(keys.next());
-            if(valueNode.getValueFrequency() >= topK) {
-                sb.append(valueNode.toString(pathFrequency.get()));
-            }
-        }
-        sb.append("]");
-        return sb.toString();
     }
 
 

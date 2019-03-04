@@ -68,46 +68,6 @@ public final class PathFrequency {
         numOfDocuments.incrementAndGet();
     }
 
-
-    /**
-     * This is a very costly api to call
-     * as it constructs the string representation of the entire path frequency objects in memory.
-     * Use it at your own risk.
-     *
-     * If the requirement is just to print, use the print method instead.
-     * */
-    public String toString() {
-
-        int topK = context.getTopK();
-        float pathOccurrenceRatio = context.getOccurrenceRatio();
-
-        context.setTotalNumberOfDocuments(numOfDocuments.get());
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-
-        //Even though we could have avoided using synchronizer here but keeping it for safety.
-        //toString will generally be called when all the threads are done with adding their documents for path frequency computation, so we neednot use synchronized here.
-        synchronized (nameNodes) {
-            Iterator<String> keyIter = nameNodes.keySet().iterator();
-            while(keyIter.hasNext()) {
-                String key = keyIter.next();
-                NameNode nameNode = nameNodes.get(key);
-
-                int pf = nameNode.getPathFrequency();
-                float ratio = ((float)pf/(float)numOfDocuments.get());
-
-                if(ratio >= pathOccurrenceRatio) {
-                    sb.append("\n\n");
-                    sb.append(nameNode.toString());
-                }
-            }
-        }
-
-        sb.append("\n\n]");
-        return sb.toString();
-    }
-
     /***
      * This method will print the results as it traverses the jsonobjecttree
      *
@@ -115,7 +75,6 @@ public final class PathFrequency {
      * **/
     public void print() {
 
-        int topK = context.getTopK();
         float pathOccurrenceRatio = context.getOccurrenceRatio();
 
         context.setTotalNumberOfDocuments(numOfDocuments.get());

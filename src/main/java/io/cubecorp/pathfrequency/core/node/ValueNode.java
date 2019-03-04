@@ -39,23 +39,6 @@ public class ValueNode {
     }
 
 
-    public String toString(int pathOccurrence) {
-
-        String value = getValue().toString();
-        int vf = valueFrequency.get();
-        float ratio = ((float)vf/(float)pathOccurrence);
-
-        if(ratio == 1.0f) {
-            return String.format("{%s, %s}, ", value, 1);
-        }
-        else {
-            return String.format("{%s, %s/%s}, ", value, vf, pathOccurrence);
-        }
-
-
-    }
-
-
     public void print(int pathOccurrence) {
 
         String value = getValue().toString();

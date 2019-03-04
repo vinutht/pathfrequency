@@ -29,14 +29,24 @@ public class Options {
 
     public boolean parseArgs(String argv[]) throws Exception {
 
-        if (argv != null) {
+        if (argv != null && argv.length > 0) {
+            int atleastKTimes = 1;
             int topK = 1;
             float occurrenceRatio = 0.3f;
             String inputFileName = "input.json";
             context.setInputFileName(inputFileName);
 
             for (int argc = 0; argc < argv.length; argc += 2) {
-                if (argv[argc].equals("-k")) {
+                if (argv[argc].equals("-t")) {
+                    try {
+                        atleastKTimes = Integer.parseInt(argv[argc + 1]);
+                    }
+                    catch (Exception e) {
+                        throw new Exception(context.getMessageString("atleastT.error"));
+                    }
+
+                }
+                else if (argv[argc].equals("-k")) {
                     try {
                         topK = Integer.parseInt(argv[argc + 1]);
                     }
@@ -58,6 +68,10 @@ public class Options {
                 }
             }
 
+            if(atleastKTimes <= 0) {
+                throw new Exception(context.getMessageString("atleastT.error"));
+            }
+
             if(topK <= 0) {
                 throw new Exception(context.getMessageString("topk.error"));
             }
@@ -70,18 +84,20 @@ public class Options {
                 throw new Exception(context.getMessageString("input.file.mandatory"));
             }
 
-            context.setTopK(topK);
+            context.setAtleastKTimes(atleastKTimes);
             context.setOccurrenceRatio(occurrenceRatio);
+            context.setTopK(topK);
 
             return true;
         }
         return false;
     }
 
-    private void printUsage() {
+    public void printUsage() {
         System.out.println("Usage: ");
-        System.out.println("-k topK");
-        System.out.println("-r occurenceRatio");
-        System.out.println("-i input json filename");
+        System.out.println("-t <int> Display values with atleast <int> number of occurrences.");
+        System.out.println("-k <int> Display top <int> values");
+        System.out.println("-r <occurrence-ratio> Display all the json-attributes with occurrence greater than the occurrence-ratio");
+        System.out.println("-i <file_name> input json filename");
     }
 }

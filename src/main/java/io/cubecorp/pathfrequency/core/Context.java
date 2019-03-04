@@ -7,6 +7,7 @@ public class Context {
 
     private final ResourceBundle messageBundle;
 
+    private int atleastKTimes;
     private int topK;
     private float occurrenceRatio;
     private String inputFileName;
@@ -23,12 +24,12 @@ public class Context {
         return messageBundle.getString(key);
     }
 
-    public int getTopK() {
-        return topK;
+    public int getAtleastKTimes() {
+        return atleastKTimes;
     }
 
-    public void setTopK(int topK) {
-        this.topK = topK;
+    public void setAtleastKTimes(int atleastKTimes) {
+        this.atleastKTimes = atleastKTimes;
     }
 
     public float getOccurrenceRatio() {
@@ -53,5 +54,13 @@ public class Context {
 
     public void setInputFileName(String inputFileName) {
         this.inputFileName = inputFileName;
+    }
+
+    public int getTopK() {
+        return topK;
+    }
+
+    public void setTopK(int topK) {
+        this.topK = topK;
     }
 }
