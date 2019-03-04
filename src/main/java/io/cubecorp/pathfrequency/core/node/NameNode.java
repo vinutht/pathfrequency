@@ -97,6 +97,9 @@ public class NameNode {
 
     /**
      * This method prints the details of the name node to the console.
+     *
+     * This should only be called from PathFrequency.print as the datastructures here are not guarded by any lock.
+     *
      * **/
     public void print() {
         int numOfDocuments = context.getTotalNumberOfDocuments();
