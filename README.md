@@ -25,11 +25,17 @@ And, so on.
 # To run the program <br>
 <br>
 
-main-class: Main <br>
-program-arguments: -k {topK} -r {occurrence-ratio} -i {input json filename} <br>
+main-class: io.cubecorp.pathfrequency.Main <br>
+program-arguments: <br>
+-t {int} Display values with atleast {int} number of occurrences <br>
+-k {int} Display top {int} values <br>
+-r {occurrence-ratio} Display all the json-attributes with occurrence greater than the occurrence-ratio <br>
+-i {input json filename} <br><br>
 input-file: There is already an input.json file present along with the source-code in the resource directory. We can make use of it.<br>
 If we need to add a new input file then we have to put it under resource folder.
 
 # Example
-io.cubecorp.pathfrequency.Main -k 2 -r 0.1 -i input.json
+io.cubecorp.pathfrequency.Main -k 3 -t 1 -r 0.1 -i input.json
+<br>
+Here we show the nodes with occurrence-ratio of atleast 10% and corresponding top 3 values with occurrence count of ateast 1.
 
